@@ -1,14 +1,665 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>DonTranQuiL</title>
-</head>
-<body>
-  <h1>DonTranQuiL</h1>
-  <p>Welcome to our project hub.</p>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DonTranQuiL - Open Source Portfolio</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (CDN) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel standalone for compiling JSX in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-  <ul>
-    <li><a href="https://github.com/DonTranQuiL/flightradar-fusion">FlightRadar Fusion</a></li>
-  </ul>
+    <style>
+        /* Custom Keyframe Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Radar Animation */
+        @keyframes radar-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            margin-left: -100%;
+            margin-top: -100%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(34, 211, 238, 0.15) 100%);
+            animation: radar-spin 4s linear infinite;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .radar-grid {
+            background-image: 
+                radial-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
+                radial-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        /* AI Orb Pulse */
+        @keyframes ai-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.5); opacity: 0.2; }
+        }
+        .ai-orb {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 1), transparent 70%);
+            border-radius: 50%;
+            animation: ai-pulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Siren / Emergency Animation */
+        @keyframes siren-flash {
+            0%, 100% { background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.15), transparent 60%); }
+            50% { background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 60%); }
+        }
+        .siren-bg {
+            position: absolute;
+            inset: 0;
+            animation: siren-flash 2s infinite;
+            pointer-events: none;
+        }
+
+        /* Seismograph Animation */
+        @keyframes seismo-slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-seismo { animation: seismo-slide 3s linear infinite; }
+
+        /* Realistic Thunderstorm & Rain */
+        @keyframes thunder-flash {
+            0%, 91%, 93%, 95%, 97%, 100% { opacity: 0; }
+            92% { opacity: 0.8; background-color: rgba(255,255,255,1); }
+            94% { opacity: 0.3; background-color: rgba(255,255,255,0.8); }
+            96% { opacity: 0.9; background-color: #bae6fd; }
+        }
+        @keyframes rain-drop {
+            0% { background-position: 0px 0px; }
+            100% { background-position: -20px 200px; }
+        }
+        .thunder-overlay { animation: thunder-flash 7s infinite; }
+        .rain-layer {
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='200' viewBox='0 0 40 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20,0 L15,30' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' stroke-linecap='round' /%3E%3C/svg%3E");
+            animation: rain-drop 0.6s linear infinite;
+        }
+
+        /* Broadcast Wave Animation */
+        @keyframes broadcast {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        .animate-broadcast { animation: broadcast 2.5s infinite ease-out; }
+
+        /* Battery Charging Animation */
+        @keyframes charge-up {
+            0% { height: 10%; opacity: 0.2; }
+            50% { opacity: 0.5; }
+            100% { height: 100%; opacity: 0.1; }
+        }
+        .animate-charge { animation: charge-up 3s ease-in-out infinite alternate; }
+
+        /* News Ticker Animation */
+        @keyframes news-ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-news { animation: news-ticker 20s linear infinite; }
+
+        /* Slow Spin (Radiation / Washing Machine) */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+        /* Washing Machine Tumble & Slosh */
+        @keyframes tumble {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes water-slosh {
+            0%, 100% { transform: rotate(-5deg) translateY(0); }
+            50% { transform: rotate(5deg) translateY(5px); }
+        }
+        .animate-tumble { animation: tumble 4s linear infinite; }
+        .animate-water { animation: water-slosh 2s ease-in-out infinite; }
+
+        /* Energy Market Chart Animation */
+        @keyframes chart-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-chart { animation: chart-scroll 6s linear infinite; }
+
+        /* Realistic Traffic Highway */
+        @keyframes traffic-dash {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes car-right {
+            0% { left: -20%; }
+            100% { left: 120%; }
+        }
+        @keyframes car-left {
+            0% { right: -20%; }
+            100% { right: 120%; }
+        }
+        .animate-traffic { animation: traffic-dash 2s linear infinite; }
+        .animate-car-right { animation: car-right linear infinite; }
+        .animate-car-left { animation: car-left linear infinite; }
+
+        /* Floating Layers */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-15px) rotate(var(--rot)); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-[#090e17]">
+    <!-- Root container for React -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Dynamic Icon wrapper to use Lucide seamlessly in the browser
+        const Icon = ({ name, size, className = "" }) => {
+            const [svgHtml, setSvgHtml] = useState('');
+            
+            useEffect(() => {
+                if (window.lucide) {
+                    const tempDiv = document.createElement('div');
+                    const i = document.createElement('i');
+                    i.setAttribute('data-lucide', name);
+                    tempDiv.appendChild(i);
+                    window.lucide.createIcons({ root: tempDiv });
+                    
+                    const svgNode = tempDiv.querySelector('svg');
+                    if (svgNode) {
+                        if (className) {
+                            const classes = className.split(' ');
+                            classes.forEach(c => c && svgNode.classList.add(c));
+                        }
+                        if (size) {
+                            svgNode.setAttribute('width', size);
+                            svgNode.setAttribute('height', size);
+                        }
+                        setSvgHtml(svgNode.outerHTML);
+                    }
+                }
+            }, [name, className, size]);
+
+            return <span className="contents" dangerouslySetInnerHTML={{ __html: svgHtml }} />;
+        };
+
+        // Reusable SVG Animation Components for backgrounds
+        const SeismoAnimation = ({ color }) => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40 z-0 flex items-center">
+                <svg className="animate-seismo w-[200%] h-32" preserveAspectRatio="none" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0,10 L10,10 L12,2 L14,18 L16,5 L18,15 L20,10 L100,10 L110,10 L112,2 L114,18 L116,5 L118,15 L120,10 L200,10" 
+                          fill="none" stroke={color} strokeWidth="0.8" vectorEffect="non-scaling-stroke" />
+                </svg>
+            </div>
+        );
+
+        const LightningAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 rounded-2xl">
+                <div className="absolute -inset-10 rain-layer opacity-60"></div>
+                <div className="absolute inset-0 thunder-overlay mix-blend-overlay"></div>
+            </div>
+        );
+
+        const BroadcastAnimation = () => (
+            <div className="absolute -bottom-8 -right-8 w-64 h-64 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
+                <div className="absolute w-12 h-12 border-2 border-blue-400/40 rounded-full animate-broadcast"></div>
+                <div className="absolute w-24 h-24 border-2 border-blue-400/30 rounded-full animate-broadcast" style={{ animationDelay: '0.8s' }}></div>
+                <div className="absolute w-36 h-36 border-2 border-blue-400/20 rounded-full animate-broadcast" style={{ animationDelay: '1.6s' }}></div>
+            </div>
+        );
+
+        const BatteryAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-end">
+                <div className="w-full bg-gradient-to-t from-green-500/40 to-green-500/5 animate-charge origin-bottom"></div>
+            </div>
+        );
+
+        const NewsAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex flex-col justify-between p-4">
+                <div className="flex justify-end items-center gap-2">
+                    <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                    <span className="text-red-500/80 text-xs font-bold tracking-widest uppercase">Live</span>
+                </div>
+                <div className="w-full overflow-hidden opacity-10 font-mono text-xl whitespace-nowrap mb-2">
+                    <div className="animate-news">
+                        BREAKING NEWS • LOCAL UPDATES • WEATHER ALERT • REGIONAL NOTICES • BREAKING NEWS • LOCAL UPDATES • WEATHER ALERT • REGIONAL NOTICES •
+                    </div>
+                </div>
+            </div>
+        );
+
+        const RadiationAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
+                <div className="absolute w-full h-full bg-lime-500/5 animate-pulse"></div>
+                <Icon name="radiation" size={160} className="text-lime-500/10 animate-spin-slow drop-shadow-[0_0_20px_rgba(132,204,22,0.3)]" />
+            </div>
+        );
+
+        const WashingMachineAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-20">
+                <div className="relative w-32 h-32 border-8 border-teal-500/40 rounded-full flex items-center justify-center overflow-hidden bg-slate-900/50">
+                    <div className="absolute w-[150%] h-[150%] animate-tumble flex items-center justify-center">
+                        <div className="w-16 h-16 bg-teal-400/50 rounded-t-full -rotate-45 blur-sm"></div>
+                        <div className="w-12 h-12 bg-blue-400/50 rounded-b-full rotate-45 blur-md absolute top-1/2 left-1/4"></div>
+                    </div>
+                    <div className="absolute bottom-0 w-full h-2/5 bg-teal-500/40 animate-water"></div>
+                    <div className="absolute top-2 right-2 w-6 h-12 bg-white/20 rounded-full rotate-45"></div>
+                </div>
+            </div>
+        );
+
+        const EnergyMarketAnimation = ({ color, fillClass }) => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20 flex items-end">
+                <div className="w-[200%] h-24 animate-chart flex items-end">
+                    <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 100">
+                        <path d="M0,100 L0,60 L20,40 L40,70 L60,30 L80,50 L100,20 L100,100 Z" fill="currentColor" className={fillClass} />
+                        <path d="M100,100 L100,20 L120,40 L140,70 L160,30 L180,50 L200,20 L200,100 Z" fill="currentColor" className={fillClass} />
+                        <path d="M0,60 L20,40 L40,70 L60,30 L80,50 L100,20 L120,40 L140,70 L160,30 L180,50 L200,20" fill="none" stroke="currentColor" strokeWidth="2" className={color} />
+                    </svg>
+                </div>
+                <div className="absolute top-6 right-6 animate-bounce" style={{ animationDuration: '3s' }}>
+                    <Icon name="euro" size={40} className={color} />
+                </div>
+            </div>
+        );
+
+        const TrafficAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-50">
+                <div className="w-full h-16 bg-slate-900/60 border-y border-slate-700/80 flex flex-col justify-center relative shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+                    <div className="w-[200%] h-0 border-b-[1.5px] border-dashed border-slate-400/50 animate-traffic"></div>
+                    <div className="absolute top-1.5 w-8 h-1 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,1)] animate-car-right" style={{ animationDuration: '3.5s' }}></div>
+                    <div className="absolute top-1.5 w-10 h-1 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,1)] animate-car-right" style={{ animationDuration: '4.2s', animationDelay: '1.2s' }}></div>
+                    <div className="absolute top-1.5 w-7 h-1 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,1)] animate-car-right" style={{ animationDuration: '2.9s', animationDelay: '2.5s' }}></div>
+                    <div className="absolute bottom-1.5 w-10 h-1 bg-yellow-100 rounded-full shadow-[0_0_10px_rgba(254,252,232,1)] animate-car-left" style={{ animationDuration: '2.8s' }}></div>
+                    <div className="absolute bottom-1.5 w-8 h-1 bg-yellow-100 rounded-full shadow-[0_0_10px_rgba(254,252,232,1)] animate-car-left" style={{ animationDuration: '3.6s', animationDelay: '1.5s' }}></div>
+                </div>
+            </div>
+        );
+
+        const LayersAnimation = () => (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-20">
+                <div className="absolute w-24 h-24 border-2 border-pink-500/50 rounded-xl animate-float" style={{'--rot': '12deg'}}></div>
+                <div className="absolute w-24 h-24 border-2 border-pink-400/30 rounded-xl animate-float" style={{'--rot': '-6deg', animationDelay: '1s'}}></div>
+                <div className="absolute w-24 h-24 bg-pink-500/20 rounded-xl animate-float" style={{'--rot': '45deg', animationDelay: '2s'}}></div>
+            </div>
+        );
+
+        const reposData = [
+            { "name": "FlightRadar Fusion", "html_url": "https://github.com/DonTranQuiL/ADSB-For-Home-assistant", "language": "Python", "stars": 7, "forks": 1, "updated_at": "2026-06-03T08:11:33Z" },
+            { "name": "Bekendmakingen", "html_url": "https://github.com/DonTranQuiL/Bekendmakingen", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-31T18:30:31Z" },
+            { "name": "Enever_prijzen", "html_url": "https://github.com/DonTranQuiL/Enever_prijzen", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-21T15:29:45Z" },
+            { "name": "entsoe_prijzen", "html_url": "https://github.com/DonTranQuiL/entsoe_prijzen", "language": "Python", "stars": 1, "forks": 0, "updated_at": "2026-05-21T18:38:47Z" },
+            { "name": "Global-Earthquake-Tracker-for-Home-Assistant", "html_url": "https://github.com/DonTranQuiL/Global-Earthquake-Tracker-for-Home-Assistant", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-06-02T12:59:44Z" },
+            { "name": "HA-Animated-cards", "html_url": "https://github.com/DonTranQuiL/HA-Animated-cards", "language": null, "stars": 0, "forks": 0, "updated_at": "2026-04-30T09:49:20Z" },
+            { "name": "ha-ndw-verkeer", "html_url": "https://github.com/DonTranQuiL/ha-ndw-verkeer", "language": "Python", "stars": 1, "forks": 0, "updated_at": "2026-05-21T18:36:02Z" },
+            { "name": "ha-p2000", "html_url": "https://github.com/DonTranQuiL/ha-p2000", "language": "Python", "stars": 1, "forks": 0, "updated_at": "2026-05-25T07:13:28Z" },
+            { "name": "HA-Radmon", "html_url": "https://github.com/DonTranQuiL/HA-Radmon", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-04-30T09:49:30Z" },
+            { "name": "HA-Weerplaza", "html_url": "https://github.com/DonTranQuiL/HA-Weerplaza", "language": "HTML", "stars": 0, "forks": 0, "updated_at": "2026-05-29T16:05:04Z" },
+            { "name": "hass-pfsense-rewrite", "html_url": "https://github.com/DonTranQuiL/hass-pfsense-rewrite", "language": null, "stars": 0, "forks": 0, "updated_at": "2026-05-17T18:41:36Z" },
+            { "name": "knmi_seismisch", "html_url": "https://github.com/DonTranQuiL/knmi_seismisch", "language": "Python", "stars": 1, "forks": 0, "updated_at": "2026-05-21T18:38:55Z" },
+            { "name": "L1-Weer-en-Nieuws", "html_url": "https://github.com/DonTranQuiL/L1-Weer-en-Nieuws", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-15T16:34:18Z" },
+            { "name": "Nova-Conversation", "html_url": "https://github.com/DonTranQuiL/Nova-Conversation", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-21T15:27:10Z" },
+            { "name": "smart-wardrobe", "html_url": "https://github.com/DonTranQuiL/smart-wardrobe", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-16T10:26:35Z" },
+            { "name": "virtual-battery-controller", "html_url": "https://github.com/DonTranQuiL/virtual-battery-controller", "language": "Python", "stars": 0, "forks": 0, "updated_at": "2026-05-21T15:29:21Z" }
+        ];
+
+        // Mapping repository names to bespoke themes
+        const integrationThemes = {
+            "FlightRadar Fusion": {
+                title: "FlightRadar Fusion",
+                desc: "Airspace Intelligence, Perfected. The high-performance, zero-bloat, hybrid ADS-B & FlightRadar24 monitor for Home Assistant. Say goodbye to API bans and database bloat.",
+                icon: "plane",
+                colorClass: "text-cyan-400 group-hover:text-cyan-300",
+                bgHover: "group-hover:bg-cyan-500/20",
+                borderHover: "hover:border-cyan-500/30",
+                shadowHover: "hover:shadow-cyan-500/10",
+                bgElement: (
+                    <div className="absolute inset-0 z-0 opacity-20 radar-grid overflow-hidden">
+                        <div className="radar-sweep"></div>
+                        <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-cyan-500 rounded-full blur-md -ml-2 -mt-2"></div>
+                    </div>
+                )
+            },
+            "Global-Earthquake-Tracker-for-Home-Assistant": {
+                title: "Global Earthquake Tracker",
+                desc: "Transform your smart home into a seismic observatory. Real-time global earthquake monitoring, proximity tracking, and automated alerts for Home Assistant.",
+                icon: "activity",
+                colorClass: "text-orange-500 group-hover:text-orange-400",
+                bgHover: "group-hover:bg-orange-500/20",
+                borderHover: "hover:border-orange-500/30",
+                shadowHover: "hover:shadow-orange-500/10",
+                bgElement: <SeismoAnimation color="#f97316" />
+            },
+            "knmi_seismisch": {
+                title: "KNMI Seismic Monitor",
+                desc: "Localized seismic awareness. Dedicated Dutch earthquake detector integrating the official KNMI Open API directly into Home Assistant.",
+                icon: "activity",
+                colorClass: "text-orange-400 group-hover:text-orange-300",
+                bgHover: "group-hover:bg-orange-400/20",
+                borderHover: "hover:border-orange-400/30",
+                shadowHover: "hover:shadow-orange-400/10",
+                bgElement: <SeismoAnimation color="#fb923c" />
+            },
+            "Nova-Conversation": {
+                title: "Nova Conversation",
+                desc: "Blazing-fast OpenAI bridge for Home Assistant. Completely rewritten to provide near-instant responses and reliable smart home control via local or cloud LLMs.",
+                icon: "bot",
+                colorClass: "text-purple-400 group-hover:text-purple-300",
+                bgHover: "group-hover:bg-purple-500/20",
+                borderHover: "hover:border-purple-500/30",
+                shadowHover: "hover:shadow-purple-500/10",
+                bgElement: <div className="ai-orb z-0"></div>
+            },
+            "virtual-battery-controller": {
+                title: "Virtual Battery Controller",
+                desc: "Stop buying expensive batteries. Intelligently turn your existing smart home infrastructure into a highly efficient Virtual Battery to optimize energy costs.",
+                icon: "battery-charging",
+                colorClass: "text-green-400 group-hover:text-green-300",
+                bgHover: "group-hover:bg-green-500/20",
+                borderHover: "hover:border-green-500/30",
+                shadowHover: "hover:shadow-green-500/10",
+                bgElement: <BatteryAnimation />
+            },
+            "ha-p2000": {
+                title: "P2000 Emergency Monitor",
+                desc: "Stay informed instantly. Retrieves and filters live emergency dispatch messages from Dutch emergency services (P2000 network).",
+                icon: "siren",
+                colorClass: "text-red-500 group-hover:text-red-400",
+                bgHover: "group-hover:bg-red-500/20",
+                borderHover: "hover:border-red-500/30",
+                shadowHover: "hover:shadow-red-500/10",
+                bgElement: <div className="siren-bg z-0 rounded-xl"></div>
+            },
+            "HA-Weerplaza": {
+                title: "Weerplaza Weather Integration",
+                desc: "Comprehensive weather data straight from Weerplaza.nl for Home Assistant. Includes stunning live local lightning strike detection alerts!",
+                icon: "cloud-lightning",
+                colorClass: "text-yellow-400 group-hover:text-yellow-300",
+                bgHover: "group-hover:bg-yellow-400/20",
+                borderHover: "hover:border-yellow-400/30",
+                shadowHover: "hover:shadow-yellow-400/10",
+                bgElement: <LightningAnimation />
+            },
+            "HA-Radmon": {
+                title: "Radmon Radiation Monitor",
+                desc: "Keep your environment safe. Real-time monitoring of local background radiation data retrieved directly from Radmon.org nodes.",
+                icon: "radio-tower",
+                colorClass: "text-lime-500 group-hover:text-lime-400",
+                bgHover: "group-hover:bg-lime-500/20",
+                borderHover: "hover:border-lime-500/30",
+                shadowHover: "hover:shadow-lime-500/10",
+                bgElement: <RadiationAnimation />
+            },
+            "Bekendmakingen": {
+                title: "Municipality Announcements",
+                desc: "Never miss a local permit or roadwork update. Automated Dutch municipal government announcements broadcast directly into your smart home.",
+                icon: "megaphone",
+                colorClass: "text-blue-400 group-hover:text-blue-300",
+                bgHover: "group-hover:bg-blue-500/20",
+                borderHover: "hover:border-blue-500/30",
+                shadowHover: "hover:shadow-blue-500/10",
+                bgElement: <BroadcastAnimation />
+            },
+            "Enever_prijzen": {
+                title: "Enever Energy Prices",
+                desc: "Live daily market data for Gas and Electricity prices via the official Enever API. Select your specific supplier and optimize your usage.",
+                icon: "zap",
+                colorClass: "text-yellow-500 group-hover:text-yellow-400",
+                bgHover: "group-hover:bg-yellow-500/20",
+                borderHover: "hover:border-yellow-500/30",
+                shadowHover: "hover:shadow-yellow-500/10",
+                bgElement: <EnergyMarketAnimation color="text-yellow-500" fillClass="text-yellow-500/20" />
+            },
+            "entsoe_prijzen": {
+                title: "ENTSO-E Power Prices",
+                desc: "Daily day-ahead electricity prices (hourly rates) for all of Europe. The ultimate tool for dynamically scheduling heavy power loads.",
+                icon: "globe",
+                colorClass: "text-indigo-400 group-hover:text-indigo-300",
+                bgHover: "group-hover:bg-indigo-500/20",
+                borderHover: "hover:border-indigo-500/30",
+                shadowHover: "hover:shadow-indigo-500/10",
+                bgElement: <EnergyMarketAnimation color="text-indigo-400" fillClass="text-indigo-500/20" />
+            },
+            "HA-Animated-cards": {
+                title: "Animated Lovelace Cards",
+                desc: "Take your Home Assistant dashboard to the next level with dynamic, beautifully designed animated layer cards that bring your smart home to life.",
+                icon: "layers",
+                colorClass: "text-pink-400 group-hover:text-pink-300",
+                bgHover: "group-hover:bg-pink-500/20",
+                borderHover: "hover:border-pink-500/30",
+                shadowHover: "hover:shadow-pink-500/10",
+                bgElement: <LayersAnimation />
+            },
+            "ha-ndw-verkeer": {
+                title: "NDW Traffic Analytics",
+                desc: "Live traffic flow monitoring. Integrates the Dutch National Data Warehouse for Traffic Information (NDW) directly into Home Assistant.",
+                icon: "car",
+                colorClass: "text-slate-300 group-hover:text-white",
+                bgHover: "group-hover:bg-slate-500/20",
+                borderHover: "hover:border-slate-500/30",
+                shadowHover: "hover:shadow-slate-500/10",
+                bgElement: <TrafficAnimation />
+            },
+            "hass-pfsense-rewrite": {
+                title: "pfSense Integration",
+                desc: "Complete router and firewall monitoring. A robust, rewritten pfSense integration to track your network health within Home Assistant.",
+                icon: "shield",
+                colorClass: "text-red-400 group-hover:text-red-300",
+                bgHover: "group-hover:bg-red-500/20",
+                borderHover: "hover:border-red-500/30",
+                shadowHover: "hover:shadow-red-500/10",
+                bgElement: null
+            },
+            "L1-Weer-en-Nieuws": {
+                title: "L1 Limburg News & Weather",
+                desc: "Stay connected to your region. Brings live local L1 Limburg news headlines and weather reports straight to your dashboards.",
+                icon: "newspaper",
+                colorClass: "text-blue-300 group-hover:text-blue-200",
+                bgHover: "group-hover:bg-blue-400/20",
+                borderHover: "hover:border-blue-400/30",
+                shadowHover: "hover:shadow-blue-400/10",
+                bgElement: <NewsAnimation />
+            },
+            "smart-wardrobe": {
+                title: "Smart Wardrobe",
+                desc: "Stop running out of clean clothes. A proactive integration that monitors your schedule and alerts you when your laundry needs attention.",
+                icon: "shirt",
+                colorClass: "text-teal-400 group-hover:text-teal-300",
+                bgHover: "group-hover:bg-teal-500/20",
+                borderHover: "hover:border-teal-500/30",
+                shadowHover: "hover:shadow-teal-500/10",
+                bgElement: <WashingMachineAnimation />
+            }
+        };
+
+        const getLanguageColor = (language) => {
+            const colors = {
+                Python: 'bg-blue-500',
+                HTML: 'bg-orange-500',
+                JavaScript: 'bg-yellow-400',
+                TypeScript: 'bg-blue-600',
+                CSS: 'bg-indigo-500',
+            };
+            return colors[language] || 'bg-slate-400';
+        };
+
+        const RepoCard = ({ repo, index }) => {
+            const theme = integrationThemes[repo.name] || {
+                title: repo.name.replace(/-/g, ' '),
+                desc: repo.description || "Open source contribution.",
+                icon: "code-2",
+                colorClass: "text-slate-300 group-hover:text-white",
+                bgHover: "group-hover:bg-slate-600/30",
+                borderHover: "hover:border-slate-500/30",
+                shadowHover: "hover:shadow-slate-500/10",
+                bgElement: null
+            };
+
+            return (
+                <div 
+                    className={`animate-fade-in-up glass-card rounded-2xl flex flex-col h-full hover:-translate-y-2 transition-all duration-500 group border border-slate-700/50 ${theme.borderHover} ${theme.shadowHover}`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                    {theme.bgElement}
+
+                    <div className="relative z-10 p-6 flex flex-col h-full">
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-4">
+                                <div className={`p-3 bg-slate-800/80 rounded-xl transition-colors duration-300 ${theme.bgHover}`}>
+                                    <Icon name={theme.icon} className={`w-7 h-7 transition-colors ${theme.colorClass}`} />
+                                </div>
+                                <h3 className={`text-xl font-bold transition-colors line-clamp-1 ${theme.colorClass}`}>
+                                    {theme.title}
+                                </h3>
+                            </div>
+                        </div>
+
+                        <p className="text-slate-300 mb-6 flex-grow text-sm leading-relaxed drop-shadow-sm font-medium">
+                            {theme.desc}
+                        </p>
+
+                        <div className="mt-auto pt-5 border-t border-slate-700/50 flex flex-wrap items-center justify-between gap-4">
+                            <div className="flex items-center flex-wrap gap-2.5 text-xs font-bold text-slate-300">
+                                {repo.language && (
+                                    <div className="flex items-center bg-slate-800/80 px-2.5 py-1.5 rounded-md">
+                                        <span className={`w-2 h-2 rounded-full mr-2 ${getLanguageColor(repo.language)}`}></span>
+                                        {repo.language}
+                                    </div>
+                                )}
+                                {(repo.stars > 0 || repo.forks > 0) && (
+                                    <div className="flex items-center gap-3 bg-slate-800/80 px-2.5 py-1.5 rounded-md">
+                                        {repo.stars > 0 && (
+                                            <span className="flex items-center hover:text-yellow-400 transition-colors">
+                                                <Icon name="star" className="w-3.5 h-3.5 mr-1 text-yellow-500" /> {repo.stars}
+                                            </span>
+                                        )}
+                                        {repo.forks > 0 && (
+                                            <span className="flex items-center hover:text-blue-400 transition-colors">
+                                                <Icon name="git-fork" className="w-3.5 h-3.5 mr-1 text-blue-400" /> {repo.forks}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <a
+                                href={repo.html_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center whitespace-nowrap flex-shrink-0 w-full min-[400px]:w-auto px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-lg transition-colors duration-300 shadow-lg border border-slate-700"
+                            >
+                                View Code
+                                <Icon name="external-link" className="w-4 h-4 ml-2 opacity-70" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        function App() {
+            const [mounted, setMounted] = useState(false);
+
+            useEffect(() => {
+                setMounted(true);
+            }, []);
+
+            const sortedRepos = [...reposData].sort((a, b) => 
+                new Date(b.updated_at) - new Date(a.updated_at)
+            );
+
+            return (
+                <div className="min-h-screen text-slate-200 font-sans selection:bg-cyan-500/30 overflow-x-hidden relative">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/20 rounded-full blur-[120px] pointer-events-none"></div>
+                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+                    <header className="relative z-10 pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                        <div className="flex flex-col items-center text-center space-y-6">
+                            <div className={`p-5 bg-slate-800/40 rounded-3xl border border-slate-700 backdrop-blur-xl transition-all duration-700 shadow-2xl ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                                <Icon name="github" className="w-14 h-14 text-white" />
+                            </div>
+                            <div className={`space-y-5 max-w-3xl transition-all duration-700 delay-100 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                                <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-lg">
+                                    Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">Automated</span> Homes
+                                </h1>
+                                <p className="text-lg md:text-xl text-slate-300 font-medium max-w-2xl mx-auto">
+                                    High-performance custom integrations, open-source solutions, and advanced tools bridging the gap between hardware and Home Assistant.
+                                </p>
+                            </div>
+                            
+                            <div className={`flex items-center gap-4 pt-4 transition-all duration-700 delay-200 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="flex items-center px-5 py-2.5 bg-slate-800/60 rounded-full border border-slate-700/50 text-sm font-bold shadow-inner">
+                                    <Icon name="code-2" className="w-4 h-4 mr-2 text-cyan-400" />
+                                    {sortedRepos.length} Projects Crafted
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="relative z-10 px-4 sm:px-6 lg:px-8 pb-32 max-w-7xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                            {sortedRepos.map((repo, index) => (
+                                <RepoCard key={repo.name} repo={repo} index={index} />
+                            ))}
+                        </div>
+                    </main>
+                    
+                    <footer className="relative z-10 border-t border-slate-800/80 py-8 text-center text-slate-500 text-sm font-medium">
+                        <p>© {new Date().getFullYear()} DonTranQuiL. Built for the Home Assistant Community.</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
