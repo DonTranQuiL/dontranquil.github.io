@@ -95,6 +95,7 @@
 
         const reposData = [
             { "name": "grocy-pro", "html_url": "https://dontranquil.github.io/grocy-pro/", "language": "TypeScript" },
+            { "name": "DOT-NL Chargers", "html_url": "https://dontranquil.github.io/DOT-NL-Chargers-for-Home-Assistant", "language": "Python" },
             { "name": "FlightRadar Fusion", "html_url": "https://dontranquil.github.io/ADSB-For-Home-assistant", "language": "Python" },
             { "name": "Global-Earthquake-Tracker-for-Home-Assistant", "html_url": "https://dontranquil.github.io/Global-Earthquake-Tracker-for-Home-Assistant", "language": "Python" },
             { "name": "knmi_seismisch", "html_url": "https://github.com/DonTranQuiL/knmi_seismisch", "language": "Python" },
@@ -115,6 +116,7 @@
 
         const integrationThemes = {
             "grocy-pro": { title: "Grocy Pro", desc: "The ultimate, zero-latency, AI-powered inventory engine for Home Assistant.", icon: "shopping-cart", colorClass: "text-emerald-400", bgElement: <BarcodeScannerAnimation /> },
+            "DOT-NL Chargers": { title: "DOT-NL Chargers", desc: "Dutch public EV chargers: occupancy, tariffs, and capped map pins.", icon: "plug-zap", colorClass: "text-emerald-400", bgElement: <BatteryAnimation /> },
             "FlightRadar Fusion": { title: "FlightRadar Fusion", desc: "High-performance hybrid ADS-B & FlightRadar24 monitor.", icon: "plane", colorClass: "text-cyan-400", bgElement: <div className="absolute inset-0 z-0 opacity-20 radar-grid"><div className="radar-sweep"></div></div> },
             "Global-Earthquake-Tracker-for-Home-Assistant": { title: "Global Earthquake Tracker", desc: "Real-time global earthquake monitoring and automated alerts.", icon: "activity", colorClass: "text-orange-500", bgElement: <SeismoAnimation color="#f97316" /> },
             "knmi_seismisch": { title: "KNMI Seismic Monitor", desc: "Dedicated Dutch earthquake detector.", icon: "activity", colorClass: "text-orange-400", bgElement: <SeismoAnimation color="#fb923c" /> },
@@ -164,7 +166,15 @@
 
             useEffect(() => {
                 const saved = localStorage.getItem('repoOrder');
-                if (saved) setOrderedRepos(JSON.parse(saved));
+                if (!saved) return;
+                try {
+                    const parsed = JSON.parse(saved);
+                    const known = new Set(parsed.map((repo) => repo.name));
+                    const missing = reposData.filter((repo) => !known.has(repo.name));
+                    setOrderedRepos([...missing, ...parsed]);
+                } catch (err) {
+                    setOrderedRepos(reposData);
+                }
             }, []);
 
             const handleDrop = (e, index) => {
