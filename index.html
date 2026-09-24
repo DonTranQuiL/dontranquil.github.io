@@ -193,6 +193,11 @@
                     <header className="max-w-7xl mx-auto py-12 text-center">
                         <h1 className="text-5xl font-extrabold text-white mb-4">DonTranQuiL Portfolio</h1>
                         <p className="text-slate-400">Drag and drop to rearrange your integrations.</p>
+                        <p className="mt-5">
+                            <a href="https://discord.gg/qaHPTTKHae" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5865F2]/20 hover:bg-[#5865F2]/30 text-[#5865F2] hover:text-indigo-300 font-semibold border border-[#5865F2]/40 transition-colors">
+                                Join the Discord community
+                            </a>
+                        </p>
                     </header>
                     <main className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {orderedRepos.map((repo, i) => <RepoCard key={repo.name} repo={repo} index={i} onDragStart={(e, idx) => setDragIndex(idx)} onDragOver={(e) => e.preventDefault()} onDrop={(e, idx) => handleDrop(e, idx)} />)}
