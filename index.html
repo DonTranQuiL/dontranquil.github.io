@@ -94,7 +94,7 @@
         const BarcodeScannerAnimation = () => <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-20"><div className="relative w-32 h-24 flex gap-1.5 items-center justify-center bg-emerald-900/20 p-2 rounded-lg"><div className="absolute left-0 right-0 h-1 bg-red-500 animate-scan rounded-full"></div></div></div>;
 
         const reposData = [
-            { "name": "grocy-pro", "html_url": "https://dontranquil.github.io/grocy-pro/", "language": "TypeScript" },
+            { "name": "grocy-pro", "html_url": "https://dontranquil.github.io/grocy-pro/", "language": "Python" },
             { "name": "DOT-NL Chargers", "html_url": "https://dontranquil.github.io/DOT-NL-Chargers-for-Home-Assistant", "language": "Python" },
             { "name": "NL Grid Watch", "html_url": "https://dontranquil.github.io/NL-Grid-Watch-For-Home-assistant", "language": "Python" },
             { "name": "Sonara", "html_url": "https://dontranquil.github.io/sonara/", "language": "Python" },
@@ -118,7 +118,7 @@
         ];
 
         const integrationThemes = {
-            "grocy-pro": { title: "Grocy Pro", desc: "The ultimate, zero-latency, AI-powered inventory engine for Home Assistant.", icon: "shopping-cart", colorClass: "text-emerald-400", bgElement: <BarcodeScannerAnimation /> },
+            "grocy-pro": { title: "Grocy Pro", desc: "Your Grocy stock, shopping list, chores, tasks, batteries and calendar, with actions and a one-tap card.", icon: "shopping-cart", colorClass: "text-amber-400", bgElement: <BarcodeScannerAnimation /> },
             "DOT-NL Chargers": { title: "DOT-NL Chargers", desc: "Dutch public EV chargers: occupancy, tariffs, and capped map pins.", icon: "plug-zap", colorClass: "text-emerald-400", bgElement: <BatteryAnimation /> },
             "NL Grid Watch": { title: "NL Grid Watch", desc: "Dutch grid-stress forecast: backfeed by day, evening peak by night.", icon: "zap", colorClass: "text-amber-400", bgElement: <EnergyMarketAnimation color="text-amber-400" fillClass="text-amber-500/20" /> },
             "Sonara": { title: "Sonara", desc: "TikTok text-to-speech voices for Home Assistant, with a dashboard voice bench.", icon: "audio-lines", colorClass: "text-cyan-400", bgElement: <BroadcastAnimation /> },
