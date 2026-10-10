@@ -93,7 +93,10 @@
         const LayersAnimation = () => <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-20"><div className="absolute w-24 h-24 border-2 border-pink-500/50 rounded-xl animate-float"></div></div>;
         const BarcodeScannerAnimation = () => <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center opacity-20"><div className="relative w-32 h-24 flex gap-1.5 items-center justify-center bg-emerald-900/20 p-2 rounded-lg"><div className="absolute left-0 right-0 h-1 bg-red-500 animate-scan rounded-full"></div></div></div>;
 
+        const SolarTiltAnimation = () => <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-25"><div className="absolute top-5 right-8 w-14 h-14 rounded-full bg-amber-400/70 shadow-[0_0_40px_rgba(251,191,36,0.6)] animate-pulse"></div><div className="absolute bottom-8 right-16 w-28 h-2 bg-sky-400/70 rounded origin-left -rotate-[25deg] animate-[pulse_4s_ease-in-out_infinite]"></div><div className="absolute bottom-0 right-[7.5rem] w-1 h-8 bg-slate-500/70"></div></div>;
+
         const reposData = [
+            { "name": "Helios Tilt", "html_url": "https://dontranquil.github.io/helios-tilt/", "language": "Python" },
             { "name": "grocy-pro", "html_url": "https://dontranquil.github.io/grocy-pro/", "language": "Python" },
             { "name": "DOT-NL Chargers", "html_url": "https://dontranquil.github.io/DOT-NL-Chargers-for-Home-Assistant", "language": "Python" },
             { "name": "NL Grid Watch", "html_url": "https://dontranquil.github.io/NL-Grid-Watch-For-Home-assistant", "language": "Python" },
@@ -118,6 +121,7 @@
         ];
 
         const integrationThemes = {
+            "Helios Tilt": { title: "Helios Tilt", desc: "Automatic solar panel tilt from the real sun position, with wind and storm stow for any linear actuator.", icon: "sun", colorClass: "text-amber-300", bgElement: <SolarTiltAnimation /> },
             "grocy-pro": { title: "Grocy Pro", desc: "Your Grocy stock, shopping list, chores, tasks, batteries and calendar, with actions and a one-tap card.", icon: "shopping-cart", colorClass: "text-amber-400", bgElement: <BarcodeScannerAnimation /> },
             "DOT-NL Chargers": { title: "DOT-NL Chargers", desc: "Dutch public EV chargers: occupancy, tariffs, and capped map pins.", icon: "plug-zap", colorClass: "text-emerald-400", bgElement: <BatteryAnimation /> },
             "NL Grid Watch": { title: "NL Grid Watch", desc: "Dutch grid-stress forecast: backfeed by day, evening peak by night.", icon: "zap", colorClass: "text-amber-400", bgElement: <EnergyMarketAnimation color="text-amber-400" fillClass="text-amber-500/20" /> },
